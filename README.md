@@ -4,6 +4,8 @@ This repository tracks my progress while reading **"How to Build Android Applica
 
 Each chapter's code exercises and notes are stored in the corresponding folder below.
 
+> **Note:** Some exercises are implemented differently from what the book instructs, for personal testing and experimentation purposes.
+
 ## Chapters
 
 ---

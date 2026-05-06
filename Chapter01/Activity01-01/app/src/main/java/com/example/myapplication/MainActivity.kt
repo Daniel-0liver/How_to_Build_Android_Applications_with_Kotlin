@@ -1,7 +1,6 @@
 package com.example.myapplication
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -9,10 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.OutlinedTextField
@@ -25,8 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import com.example.myapplication.ui.theme.MyApplicationTheme
@@ -38,12 +37,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    var red by remember { mutableStateOf("") }
-                    var green by remember { mutableStateOf("") }
-                    var blue by remember { mutableStateOf("") }
+                    val red = rememberTextFieldState()
+                    val green = rememberTextFieldState()
+                    val blue = rememberTextFieldState()
                     var defaultColor by remember { mutableStateOf(Color.White) }
-                    val context = LocalContext.current
-                    var colorToShow = ""
 
                     Column(
                         modifier = Modifier
@@ -55,53 +52,49 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Text(stringResource(R.string.information_field))
                         OutlinedTextField(
-                            value = red,
-                            onValueChange = { red = it },
-                            label = { Text("Red Channel") },
+                            state = red,
+                            label = { Text(stringResource(R.string.red_channel)) },
+                            isError = !isValidHexadecimal(red),
                             modifier = Modifier.fillMaxWidth()
                         )
 
                         OutlinedTextField(
-                            value = green,
-                            onValueChange = { green = it },
-                            label = { Text("Green Channel") },
+                            state = green,
+                            label = { Text(stringResource(R.string.green_channel)) },
+                            isError = !isValidHexadecimal(green),
                             modifier = Modifier.fillMaxWidth()
                         )
 
                         OutlinedTextField(
-                            value = blue,
-                            onValueChange = { blue = it },
-                            label = { Text("Blue Channel") },
+                            state = blue,
+                            label = { Text(stringResource(R.string.blue_channel)) },
+                            isError = !isValidHexadecimal(blue),
                             modifier = Modifier.fillMaxWidth()
                         )
 
-                        Button(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                if (isValidHexadecimal(red) &&
-                                    isValidHexadecimal(green) &&
-                                    isValidHexadecimal(blue)
-                                ) {
-                                    colorToShow = "#$red$green$blue"
-                                    defaultColor = Color(colorToShow.toColorInt())
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Not valid hexadecimal",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                        ) {
-                            Text("Create RGB Color")
-                        }
-                        ElevatedCard(
-                            colors = CardDefaults.cardColors(
-                                containerColor = defaultColor
-                            ),
+                        val isValidInput =
+                            isValidHexadecimal(red) && isValidHexadecimal(green) && isValidHexadecimal(
+                                blue
+                            )
+                        val colorToShow = "#${red.text}${green.text}${blue.text}"
+
+                        Text(
+                            text = colorToShow,
                             modifier = Modifier
-                                .size(width = 360.dp, height = 180.dp),
-                        ) {
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                        if (isValidInput) {
+                            defaultColor = Color(colorToShow.toColorInt())
+                            ElevatedCard(
+                                colors = CardDefaults.cardColors(
+                                    containerColor = defaultColor
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(150.dp),
+                            ) {
+                            }
                         }
                     }
                 }
@@ -109,11 +102,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun isValidHexadecimal(input: String): Boolean {
-        return input.filter {
+    private fun isValidHexadecimal(input: TextFieldState): Boolean {
+        val inputText = input.text
+        return inputText.length == 2 && inputText.all {
             it in '0'..'9' ||
                     it in 'A'..'F' ||
                     it in 'a'..'f'
-        }.length == 2
+        }
     }
 }

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="information_field">Add two hexadecimal characters between 0–9, A-F or a-f without the # for each channel</string>
+</resources>

@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,9 +34,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    var firstName by remember { mutableStateOf("") }
-                    var lastName by remember { mutableStateOf("") }
-                    var fullName by remember { mutableStateOf("") }
+                    var firstName by rememberSaveable { mutableStateOf("") }
+                    var lastName by rememberSaveable { mutableStateOf("") }
+                    var fullName by rememberSaveable { mutableStateOf("") }
                     val welcomeMessage = stringResource(R.string.welcome_to_the_app)
                     val enterNameErrorMessage = stringResource(R.string.please_enter_a_name)
 
@@ -85,15 +86,6 @@ class MainActivity : ComponentActivity() {
                             Text(
                                 text = "$welcomeMessage $fullName!"
                             )
-                        } else {
-                            fullName = ""
-                            val toast = Toast.makeText(
-                                context,
-                                enterNameErrorMessage,
-                                Toast.LENGTH_SHORT
-                            )
-                            toast.setGravity(Gravity.CENTER, 0, 0)
-                            toast.show()
                         }
                     }
                 }

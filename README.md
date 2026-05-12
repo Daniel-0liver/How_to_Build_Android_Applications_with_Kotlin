@@ -33,7 +33,7 @@ Explores how to build multi-screen applications using Activities and Intents. Co
 |---------------------|------|
 | Exercise 02-01 | [Exercise02-01](./Chapter02/Exercise02-01) |
 | Exercise 02-02 | [Exercise02-02](./Chapter02/Exercise02-02) |
-| Exercise 02-03 | [Exercise02-03](./Chapter02/Exercise02-03) |
+| Exercise 02-03 | Reused [Exercise01-05](./Chapter01/Exercise01-05); updated in commit [c3d8ee0](https://github.com/Daniel-0liver/How_to_Build_Android_Applications_with_Kotlin/commit/c3d8ee0babc5379bde4341bb1aaedfd25ffdbd2b) |
 | Exercise 02-04 | [Exercise02-04](./Chapter02/Exercise02-04) |
 | Exercise 02-05 | [Exercise02-05](./Chapter02/Exercise02-05) |
 | Exercise 02-06 | [Exercise02-06](./Chapter02/Exercise02-06) |

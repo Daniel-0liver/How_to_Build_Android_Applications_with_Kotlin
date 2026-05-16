@@ -42,9 +42,9 @@ Explores how to build multi-screen applications using Activities and Intents. Co
 
 ---
 
-### [Chapter 3 – Building Modern Android UIs (Compose + Legacy)](./Chapter03)
+### [Chapter 3 – Developing the UI with Jetpack Compose](./Chapter03)
 
-Focuses on the 3rd edition Chapter 3 content, including modern UI development with Jetpack Compose and working with legacy Android UI code where needed.
+Developing the UI with Jetpack Compose provides an in-depth look at basic composable functions and layout groups in Jetpack Compose. It demonstrates how to use them to build the UI and respond to state changes.
 
 | Exercise / Activity | Link |
 |---------------------|------|

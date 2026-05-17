@@ -16,8 +16,8 @@ Introduction to Android development with Kotlin. Covers setting up Android Studi
 
 | Exercise / Activity | Link |
 |---------------------|------|
-| Exercise 01-01 | [Exercise01-01](./Chapter01/Exercise01-01) |
-| Exercise 01-02 | [Exercise01-02](./Chapter01/Exercise01-02) |
+| Exercise 01-01 | [Exercise01-01](./Chapter01/Exercise01-01) *(Only covers creating a new project)* |
+| Exercise 01-02 | [Exercise01-02](./Chapter01/Exercise01-02) *(Only covers setting up an emulator)* |
 | Exercise 01-03 | [Exercise01-03](./Chapter01/Exercise01-03) |
 | Exercise 01-04 | [Exercise01-04](./Chapter01/Exercise01-04) |
 | Exercise 01-05 | [Exercise01-05](./Chapter01/Exercise01-05) |
@@ -42,9 +42,9 @@ Explores how to build multi-screen applications using Activities and Intents. Co
 
 ---
 
-### [Chapter 3 – Developing the UI with Fragments](./Chapter03)
+### [Chapter 3 – Developing the UI with Jetpack Compose](./Chapter03)
 
-Introduces Fragments as reusable UI components. Covers the Fragment lifecycle, adding Fragments statically and dynamically, and communicating between Fragments and their host Activity.
+Developing the UI with Jetpack Compose provides an in-depth look at basic composable functions and layout groups in Jetpack Compose. It demonstrates how to use them to build the UI and respond to state changes.
 
 | Exercise / Activity | Link |
 |---------------------|------|

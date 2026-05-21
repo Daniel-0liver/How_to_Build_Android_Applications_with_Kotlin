@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -58,10 +57,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RegisterForActivityResultTheme {
-                if (isLoginValid) {
+                if (!isLoginValid) {
                     FormScreen()
                 } else {
-                    WelcomeScreen()
+                    WelcomeScreen(userName)
                 }
             }
         }
@@ -118,9 +117,11 @@ class MainActivity : ComponentActivity() {
                             context,
                             LoginActivity::class.java
                         )
+                        intent.putExtra(USER_NAME_KEY, userName)
+                        intent.putExtra(PASSWORD_KEY, password)
                         startForResult.launch(intent)
                     }
-                ) { 
+                ) {
                     Text(
                         text = stringResource(R.string.button_login)
                     )
@@ -131,16 +132,19 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WelcomeScreen(modifier: Modifier = Modifier) {
+fun WelcomeScreen(userName: String, modifier: Modifier = Modifier) {
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(innerPadding)
+            horizontalAlignment = Alignment.CenterHorizontally
+
         ) {
             Text(
-                text = stringResource(R.string.welcome_message),
-                fontSize = 56.sp
+                text = stringResource(R.string.welcome_message, userName),
+                fontSize = 28.sp
             )
         }
     }

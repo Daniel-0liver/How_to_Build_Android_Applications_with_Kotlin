@@ -2,6 +2,7 @@ package com.example.registerforactivityresult
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,7 +22,19 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
+        val userName = intent.getStringExtra(USER_NAME_KEY) ?: ""
+        val password = intent.getStringExtra(PASSWORD_KEY) ?: ""
+        val isValidLogin = validateLogin(userName, password)
+        if (isValidLogin) {
+            setForm(userName, password, isValidLogin)
+        } else {
+            Toast.makeText(
+                this,
+                getString(R.string.invalid_login),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        finish()
     }
 
     fun setForm(
@@ -51,8 +64,8 @@ class LoginActivity : ComponentActivity() {
     }
 
     fun validateLogin(userName: String, password: String): Boolean {
-        val listOfValidUserNames = listOf("admin", "user1", "user2", "user3")
-        val listOfValidPasswords = listOf("admin123", "user1pass", "user2pass", "user3pass")
+        val listOfValidUserNames = listOf("admin", "user1", "user2", "user3", "a")
+        val listOfValidPasswords = listOf("admin123", "user1pass", "user2pass", "user3pass", "a")
         if (userName in listOfValidUserNames && password in listOfValidPasswords) {
             return true
         }

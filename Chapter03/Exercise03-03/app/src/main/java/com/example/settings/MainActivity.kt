@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
@@ -67,6 +69,7 @@ fun SettingsContainer(modifier: Modifier = Modifier) {
         SettingsSwitch()
         SettingsSlider()
         SettingsRadioButton()
+        SettingsAlertDialog()
     }
 }
 
@@ -250,9 +253,62 @@ fun SettingsRadioButton(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun SettingsAlertDialog(modifier: Modifier = Modifier) {
+    var showDialog by remember { mutableStateOf(false) }
+    Button(
+        onClick = { showDialog = true }
+    ) {
+        Text(
+            text = stringResource(
+                R.string.sign_out
+            )
+        )
+    }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showDialog = false
+            },
+            title = {
+                Text(
+                    text = stringResource(
+                        R.string.alert_title
+                    )
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDialog = false
+                    }
+                ) {
+                    Text(
+                        text = stringResource(
+                            R.string.ok
+                        )
+                    )
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        showDialog = false
+                    }
+                ) {
+                    Text(
+                        text = stringResource(
+                            R.string.cancel
+                        )
+                    )
+                }
+            }
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun SettingsContainerPreview() {
     SettingsContainer()
 }
-

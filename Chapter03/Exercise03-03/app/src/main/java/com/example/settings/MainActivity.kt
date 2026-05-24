@@ -17,7 +17,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,6 +65,8 @@ fun SettingsContainer(modifier: Modifier = Modifier) {
         SettingsImage()
         SettingsCheckBox()
         SettingsSwitch()
+        SettingsSlider()
+        SettingsRadioButton()
     }
 }
 
@@ -172,12 +177,78 @@ fun SettingsSwitch(modifier: Modifier = Modifier) {
             }
         )
         Switch(
+            modifier = Modifier.padding(end = 10.dp),
             checked = isChecked,
             onCheckedChange = { isChecked = it }
         )
     }
 }
 
+@Composable
+fun SettingsSlider(modifier: Modifier = Modifier) {
+    var sliderValue by remember { mutableStateOf(0f) }
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .padding(start = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            modifier = Modifier.padding(end = 16.dp),
+            text = stringResource(R.string.settings_text_size),
+            fontSize = 18.sp
+        )
+        Slider(
+            value = sliderValue,
+            onValueChange = { sliderValue = it },
+            steps = 2
+        )
+    }
+}
+
+@Composable
+fun SettingsRadioButton(modifier: Modifier = Modifier) {
+    var selectedPaymentMethod by remember {
+        mutableStateOf("PayPal")
+    }
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = stringResource(
+                R.string.payment_method
+            ),
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        listOf("PayPal", "CreditCard", "Bank Transfer").forEach { paymentMethod ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(vertical = 4.dp)
+                    .clickable {
+                        selectedPaymentMethod = paymentMethod
+                    }
+            ) {
+                RadioButton(
+                    selected = (selectedPaymentMethod == paymentMethod),
+                    onClick = {
+                        selectedPaymentMethod = paymentMethod
+                    },
+                    colors = RadioButtonDefaults.colors()
+                )
+                Text(
+                    text = paymentMethod,
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                )
+            }
+        }
+    }
+}
 
 @Preview
 @Composable

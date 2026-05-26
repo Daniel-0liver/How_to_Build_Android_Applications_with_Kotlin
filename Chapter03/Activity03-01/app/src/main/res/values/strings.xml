@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Dashboard</string>
+    <string name="business_dashboard">Business Dashboard</string>
+    <string name="total_sales">Total Sales</string>
+    <string name="active_users">Active Users</string>
+    <string name="conversion_rate">Conversion Rate</string>
+    <string name="revenue_growth">Revenue Growth</string>
+    <string name="total_sales_breakdown">Total Sales Breakdown</string>
+    <string name="online_sales">Online Sales: $8,000</string>
+    <string name="in_store_sales">In-store Sales: $4,000</string>
+    <string name="yoy_growth">Year-over-Year Growth: +10%</string>
+</resources>

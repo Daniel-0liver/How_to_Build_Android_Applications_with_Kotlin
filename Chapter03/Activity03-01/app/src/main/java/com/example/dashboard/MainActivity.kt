@@ -80,7 +80,6 @@ fun DashBoardScreen(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
                 .size(150.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -104,7 +103,6 @@ fun DashBoardScreen(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
                 .size(150.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -167,7 +165,6 @@ fun MetricScreen(
 ) {
     Card(
         modifier = modifier
-            .padding(16.dp)
             .fillMaxSize(),
         elevation = CardDefaults.cardElevation(8.dp),
         shape = RoundedCornerShape(8.dp)

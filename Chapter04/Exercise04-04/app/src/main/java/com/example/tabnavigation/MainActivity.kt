@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -23,6 +25,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -35,7 +39,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TabNavigationTheme {
-
+                MainApp()
             }
         }
     }
@@ -68,6 +72,29 @@ fun MainApp() {
                         containerColor = MaterialTheme.colorScheme.surfaceContainer
                     )
                 )
+                PrimaryScrollableTabRow(
+                    selectedTabIndex = tabIndex,
+                    edgePadding = 0.dp
+                ) {
+                    tabNavigationItems.forEachIndexed { index, item ->
+                        val isSelected = currentDestination?.hasRoute(item.route::class) == true
+                        if (isSelected) tabIndex = index
+                        Tab(
+                            selected = isSelected,
+                            text = {
+                                Text(item.label)
+                            },
+                            onClick = {
+                                if (!isSelected) {
+                                    navController.navigate(item.route) {
+                                        popUpTo(navController.graph.startDestinationId)
+                                        launchSingleTop = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+                }
             }
         }
     ) { innerPadding ->

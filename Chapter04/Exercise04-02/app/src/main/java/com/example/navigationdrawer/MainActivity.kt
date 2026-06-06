@@ -61,7 +61,8 @@ fun NavigationDrawerHost(
     coroutineScope: CoroutineScope,
     drawerState: DrawerState,
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    mod,
+    ifier: Modifier = Modifier
 ) {
     Scaffold(
         topBar = {

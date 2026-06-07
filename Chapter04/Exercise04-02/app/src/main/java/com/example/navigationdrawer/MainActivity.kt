@@ -61,8 +61,6 @@ fun NavigationDrawerHost(
     coroutineScope: CoroutineScope,
     drawerState: DrawerState,
     navController: NavHostController,
-    mod,
-    ifier: Modifier = Modifier
 ) {
     Scaffold(
         topBar = {
@@ -74,7 +72,7 @@ fun NavigationDrawerHost(
                         )
                     )
                 },
-                modifier = modifier.statusBarsPadding(),
+                modifier = Modifier.statusBarsPadding(),
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer
                 ),
@@ -197,7 +195,7 @@ fun MainApp(modifier: Modifier = Modifier) {
         NavigationDrawerHost(
             coroutineScope = coroutineScope,
             drawerState = drawerState,
-            navController = navController
+            navController = navController,
         )
     }
 }

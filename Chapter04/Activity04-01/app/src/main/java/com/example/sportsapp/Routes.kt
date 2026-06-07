@@ -25,13 +25,16 @@ sealed class Destination(val label: String) {
 
     @Serializable
     data object Profile : Destination("Profile")
+
+    @Serializable
+    data class SelectedSport(val sportName: String) : Destination(sportName)
 }
 
 sealed class NavigationDrawer(
-    label: String,
-    selectedIcon: ImageVector,
-    unselectedIcon: ImageVector,
-    route: Destination
+    val label: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val route: Destination,
 ) {
     data object Home : NavigationDrawer(
         label = "Home",
@@ -39,18 +42,21 @@ sealed class NavigationDrawer(
         unselectedIcon = Icons.Outlined.Home,
         route = Destination.Home
     )
+
     data object MySports : NavigationDrawer(
         label = "My Sports",
         selectedIcon = Icons.Filled.Sports,
         unselectedIcon = Icons.Outlined.Sports,
         route = Destination.MySports
     )
+
     data object Calendar : NavigationDrawer(
         label = "Calendar",
         selectedIcon = Icons.Filled.DateRange,
         unselectedIcon = Icons.Outlined.DateRange,
         route = Destination.Calendar
     )
+
     data object Profile : NavigationDrawer(
         label = "Profile",
         selectedIcon = Icons.Filled.Person,

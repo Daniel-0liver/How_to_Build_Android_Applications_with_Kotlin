@@ -66,8 +66,6 @@ Covers the Jetpack Navigation component for managing in-app navigation. Topics i
 | Exercise 04-02 | [Exercise04-02](./Chapter04/Exercise04-02) |
 | Exercise 04-03 | [Exercise04-03](./Chapter04/Exercise04-03) |
 | Exercise 04-04 | [Exercise04-04](./Chapter04/Exercise04-04) |
-| Example 04-01 | [Example04-01](./Chapter04/Example04-01) |
-| Example 04-02 | [Example04-02](./Chapter04/Example04-02) |
 | Activity 04-01 | [Activity04-01](./Chapter04/Activity04-01) |
 
 ---

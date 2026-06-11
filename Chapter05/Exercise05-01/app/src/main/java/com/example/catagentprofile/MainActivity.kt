@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.example.catagentprofile.model.ImageResultData
 import com.example.catagentprofile.ui.theme.CatAgentProfileTheme
 import io.ktor.client.HttpClient
@@ -99,13 +99,9 @@ fun ServerResponse(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        AsyncImage(
-            model = contents,
-            contentDescription = "Cat Image",
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = contents,
+        LoadedImage(
+            imageUrl = contents,
+            modifier = Modifier.size(200.dp)
         )
         Button(
             onClick = onClick,

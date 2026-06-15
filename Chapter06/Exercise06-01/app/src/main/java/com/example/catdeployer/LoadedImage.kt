@@ -14,6 +14,6 @@ fun LoadedImage(
     AsyncImage(
         model = imageUrl,
         contentDescription = null,
-        modifier = modifier.size(64.dp)
+        modifier = modifier
     )
 }

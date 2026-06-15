@@ -12,8 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.catdeployer.model.EmployeeRole
-import com.example.catdeployer.model.EmployeeUiModel
+import com.example.catdeployer.model.CatUiModel
 import com.example.catdeployer.model.Gender
 import com.example.catdeployer.ui.theme.CatDeployerTheme
 
@@ -24,97 +23,25 @@ class MainActivity : ComponentActivity() {
         setContent {
             CatDeployerTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Employees(
-                        employees = listOf(
-                            EmployeeUiModel(
-                                name = "Robert",
-                                role = EmployeeRole.HUMAN_RESOURCES,
-                                gender = Gender.MALE,
-                                imageUrl = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?h=650&w=940"
+                    CatAgents(
+                        cats = listOf(
+                            CatUiModel(
+                                Gender.MALE,
+                                "Fred",
+                                "Silent and deadly",
+                                "https://24.media.tumblr.com/tumblr_lsln7s1Z8f1qasbyxo1_250.jpg"
                             ),
-                            EmployeeUiModel(
-                                name = "Wilma",
-                                role = EmployeeRole.INFORMATION_TECHNOLOGY,
-                                gender = Gender.FEMALE,
-                                imageUrl = "https://images.pexels.com/photos/3189024/pexels-photo-3189024.jpeg?h=650&w=940"
+                            CatUiModel(
+                                Gender.FEMALE,
+                                "Wilma",
+                                "Cuddly assassin",
+                                "https://cdn2.thecatapi.com/images/KJF8fB_20.jpg"
                             ),
-                            EmployeeUiModel(
-                                name = "Curious George",
-                                role = EmployeeRole.FINANCE,
-                                gender = Gender.OTHER,
-                                imageUrl = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?h=750&w=1260"
-                            ),
-                            EmployeeUiModel(
-                                name = "Robert",
-                                role = EmployeeRole.HUMAN_RESOURCES,
-                                gender = Gender.MALE,
-                                imageUrl = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?h=650&w=940"
-                            ),
-                            EmployeeUiModel(
-                                name = "Wilma",
-                                role = EmployeeRole.INFORMATION_TECHNOLOGY,
-                                gender = Gender.FEMALE,
-                                imageUrl = "https://images.pexels.com/photos/3189024/pexels-photo-3189024.jpeg?h=650&w=940"
-                            ),
-                            EmployeeUiModel(
-                                name = "Curious George",
-                                role = EmployeeRole.FINANCE,
-                                gender = Gender.OTHER,
-                                imageUrl = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?h=750&w=1260"
-                            ),
-                            EmployeeUiModel(
-                                name = "Robert",
-                                role = EmployeeRole.HUMAN_RESOURCES,
-                                gender = Gender.MALE,
-                                imageUrl = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?h=650&w=940"
-                            ),
-                            EmployeeUiModel(
-                                name = "Wilma",
-                                role = EmployeeRole.INFORMATION_TECHNOLOGY,
-                                gender = Gender.FEMALE,
-                                imageUrl = "https://images.pexels.com/photos/3189024/pexels-photo-3189024.jpeg?h=650&w=940"
-                            ),
-                            EmployeeUiModel(
-                                name = "Curious George",
-                                role = EmployeeRole.FINANCE,
-                                gender = Gender.OTHER,
-                                imageUrl = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?h=750&w=1260"
-                            ),
-                            EmployeeUiModel(
-                                name = "Robert",
-                                role = EmployeeRole.HUMAN_RESOURCES,
-                                gender = Gender.MALE,
-                                imageUrl = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?h=650&w=940"
-                            ),
-                            EmployeeUiModel(
-                                name = "Wilma",
-                                role = EmployeeRole.INFORMATION_TECHNOLOGY,
-                                gender = Gender.FEMALE,
-                                imageUrl = "https://images.pexels.com/photos/3189024/pexels-photo-3189024.jpeg?h=650&w=940"
-                            ),
-                            EmployeeUiModel(
-                                name = "Curious George",
-                                role = EmployeeRole.FINANCE,
-                                gender = Gender.OTHER,
-                                imageUrl = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?h=750&w=1260"
-                            ),
-                            EmployeeUiModel(
-                                name = "Robert",
-                                role = EmployeeRole.HUMAN_RESOURCES,
-                                gender = Gender.MALE,
-                                imageUrl = "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?h=650&w=940"
-                            ),
-                            EmployeeUiModel(
-                                name = "Wilma",
-                                role = EmployeeRole.INFORMATION_TECHNOLOGY,
-                                gender = Gender.FEMALE,
-                                imageUrl = "https://images.pexels.com/photos/3189024/pexels-photo-3189024.jpeg?h=650&w=940"
-                            ),
-                            EmployeeUiModel(
-                                name = "Curious George",
-                                role = EmployeeRole.FINANCE,
-                                gender = Gender.OTHER,
-                                imageUrl = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?h=750&w=1260"
+                            CatUiModel(
+                                Gender.UNKNOWN,
+                                "Curious George",
+                                "Award winning investigator",
+                                "https://cdn2.thecatapi.com/images/vJB8rwfdX.jpg"
                             )
                         ),
                         modifier = Modifier.padding(innerPadding)
@@ -126,8 +53,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Employees(
-    employees: List<EmployeeUiModel>,
+fun CatAgents(
+    cats: List<CatUiModel>,
     modifier: Modifier = Modifier
 ) {
     val columnState = rememberLazyListState()
@@ -136,21 +63,21 @@ fun Employees(
         state = columnState,
         modifier = modifier
     ) {
-        items(employees.size) { index ->
-            Employee(employee = employees[index])
+        items(cats.size) { index ->
+            Employee(cat = cats[index])
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun EmployeesPreview() {
+fun CatAgentsPreview() {
     CatDeployerTheme {
-        Employees(
-            employees = listOf(
-                EmployeeUiModel(
+        CatAgents(
+            cats = listOf(
+                CatUiModel(
                     name = "Oliver",
-                    role = EmployeeRole.HUMAN_RESOURCES,
+                    biography = "",
                     gender = Gender.MALE,
                     imageUrl = ""
                 )

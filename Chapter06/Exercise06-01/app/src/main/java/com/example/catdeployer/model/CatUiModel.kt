@@ -1,8 +1,8 @@
 package com.example.catdeployer.model
 
-data class EmployeeUiModel(
-    val name: String,
-    val role: EmployeeRole,
+data class CatUiModel(
     val gender: Gender,
+    val name: String,
+    val biography: String,
     val imageUrl: String,
 )

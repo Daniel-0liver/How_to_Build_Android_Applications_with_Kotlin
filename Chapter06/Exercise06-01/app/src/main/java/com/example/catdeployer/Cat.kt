@@ -1,5 +1,6 @@
 package com.example.catdeployer
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,10 +14,13 @@ import com.example.catdeployer.model.CatUiModel
 @Composable
 fun Employee(
     cat: CatUiModel,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier
+        modifier = modifier.clickable {
+            onClick()
+        }
     ) {
         if (cat.imageUrl.isNotEmpty()) {
             LoadedImage(

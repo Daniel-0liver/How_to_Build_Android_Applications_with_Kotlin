@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.example.catdeployer.model.CatUiModel
 
 @Composable
-fun Employee(
+fun Cat(
     cat: CatUiModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier

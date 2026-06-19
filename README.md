@@ -76,9 +76,9 @@ Introduces key third-party libraries for Android development. Covers making HTTP
 
 | Exercise / Activity | Link |
 |---------------------|------|
-| Exercise 05-01 | [Exercise05-01](./Chapter05/Exercise05-01) |
-| Exercise 05-02 | [Exercise05-02](./Chapter05/Exercise05-02) |
-| Exercise 05-03 | [Exercise05-03](./Chapter05/Exercise05-03) |
+| Exercise 05-01 | [Exercise05-01](./Chapter05/Exercise05-01); implemented in commit [0b911e8](https://github.com/Daniel-0liver/How_to_Build_Android_Applications_with_Kotlin/commit/0b911e84aecc595c3c5471933d9802ed856b7bba) |
+| Exercise 05-02 | Reused [Exercise05-01](./Chapter05/Exercise05-01); updated in commit [f82426b](https://github.com/Daniel-0liver/How_to_Build_Android_Applications_with_Kotlin/commit/f82426bf4d7744defbf59be90e4acf5451ad1b96) |
+| Exercise 05-03 | Reused [Exercise05-01](./Chapter05/Exercise05-01); updated in commit [2e3fac7](https://github.com/Daniel-0liver/How_to_Build_Android_Applications_with_Kotlin/commit/2e3fac79f2045effe70941dd69821f9485e4a203) |
 | Activity 05-01 | [Activity05-01](./Chapter05/Activity05-01) |
 
 ---

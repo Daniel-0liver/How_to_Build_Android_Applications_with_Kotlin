@@ -19,8 +19,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.example.catdeployer.DragAnchors.END
 import com.example.catdeployer.DragAnchors.START
 import com.example.catdeployer.model.CatUiModel
+import com.example.catdeployer.model.ImageResponse
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
 
 @Composable
@@ -37,7 +47,7 @@ fun Cat(
     }
 
     LaunchedEffect(dragState.settledValue) {
-        if (dragState.settledValue == DragAnchors.END) {
+        if (dragState.settledValue == END) {
             onSwipe()
         }
     }
@@ -48,8 +58,8 @@ fun Cat(
             .onSizeChanged { layoutSize ->
                 dragState.updateAnchors(
                     DraggableAnchors {
-                        DragAnchors.START at 0f
-                        DragAnchors.END at layoutSize.width.toFloat()
+                        START at 0f
+                        END at layoutSize.width.toFloat()
                     }
                 )
             }
@@ -81,6 +91,23 @@ fun Cat(
         }
     }
 }
+
+private val client = HttpClient(CIO) {
+    install(ContentNegotiation) {
+        json(Json { ignoreUnknownKeys = true })
+    }
+}
+
+suspend fun getRandomCatImageUrl(): List<ImageResponse> {
+    return client.get(
+        urlString = "https://api.thecatapi.com/v1/images/search"
+    ) {
+        url {
+            parameter("limit", 1)
+        }
+    }.body()
+}
+
 
 private enum class DragAnchors {
     START,

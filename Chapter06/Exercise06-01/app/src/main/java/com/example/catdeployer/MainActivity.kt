@@ -5,15 +5,19 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,6 +25,7 @@ import com.example.catdeployer.model.CatUiModel
 import com.example.catdeployer.model.Gender
 import com.example.catdeployer.model.ListItemUiModel
 import com.example.catdeployer.ui.theme.CatDeployerTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +59,7 @@ class MainActivity : ComponentActivity() {
                                     Gender.MALE,
                                     "Fred",
                                     "Silent and deadly",
-                                    "https://24.media.tumblr.com/ tumblr_lsln7s1Z8f1qasbyxo1_250.jpg"
+                                    "https://24.media.tumblr.com/tumblr_lsln7s1Z8f1qasbyxo1_250.jpg"
                                 )
                             ),
                             ListItemUiModel.Cat(
@@ -70,7 +75,7 @@ class MainActivity : ComponentActivity() {
                                     Gender.MALE,
                                     "Fred",
                                     "Silent and deadly",
-                                    "https://24.media.tumblr.com/ tumblr_lsln7s1Z8f1qasbyxo1_250.jpg"
+                                    "https://24.media.tumblr.com/tumblr_lsln7s1Z8f1qasbyxo1_250.jpg"
                                 )
                             ),
                             ListItemUiModel.Cat(
@@ -108,20 +113,65 @@ class MainActivity : ComponentActivity() {
                             )
                         )
                     }
-                    CatAgents(
-                        listItems = listItems,
-                        onItemClick = {
-                            Toast.makeText(
-                                context,
-                                "${listItems[it]} Clicked",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        },
-                        modifier = Modifier.padding(innerPadding),
-                        onItemSwipe = {
-                            listItems.removeAt(it)
+                    Column(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxWidth()
+                    ) {
+                        val scope = rememberCoroutineScope()
+                        Button(
+                            onClick = {
+                                scope.launch {
+                                    val url = runCatching {
+                                        getRandomCatImageUrl().firstOrNull()?.imageUrl
+                                    }.getOrElse {
+                                        Toast.makeText(
+                                            context,
+                                            "No internet connection",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        return@launch
+                                    }
+
+                                    if (url.isNullOrBlank()) {
+                                        Toast.makeText(
+                                            context,
+                                            "Image not found",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        return@launch
+                                    }
+
+                                    listItems.add(
+                                        1,
+                                        ListItemUiModel.Cat(
+                                            CatUiModel(
+                                                gender = Gender.UNKNOWN,
+                                                name = "Anonymous",
+                                                biography = "Unknown",
+                                                imageUrl = url
+                                            )
+                                        )
+                                    )
+                                }
+                            }
+                        ) {
+                            Text(text = "Add Cat")
                         }
-                    )
+                        CatAgents(
+                            listItems = listItems,
+                            onItemClick = {
+                                Toast.makeText(
+                                    context,
+                                    "${listItems[it]} Clicked",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            },
+                            onItemSwipe = {
+                                listItems.removeAt(it)
+                            }
+                        )
+                    }
                 }
             }
         }

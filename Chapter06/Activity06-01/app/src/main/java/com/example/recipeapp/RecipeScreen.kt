@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -28,24 +29,25 @@ fun RecipeScreen(modifier: Modifier = Modifier) {
         ) {
             LazyColumn(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(8.dp)
                     .weight(1f)
             ) { }
 
-            TextField(
+            OutlinedTextField(
                 value = "",
                 onValueChange = { /* TODO */ },
                 label = { Text("Recipe Name") },
+                maxLines = 1,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(8.dp)
                     .fillMaxWidth()
             )
-            TextField(
+            OutlinedTextField(
                 value = "",
                 onValueChange = { /* TODO */ },
                 label = { Text("Recipe Description") },
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(8.dp)
                     .fillMaxWidth()
             )
             Row(
@@ -55,7 +57,7 @@ fun RecipeScreen(modifier: Modifier = Modifier) {
                 Button(
                     onClick = { /* TODO */ },
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(8.dp)
                         .weight(1f)
                 ) {
                     Text("Add Savory")
@@ -63,7 +65,7 @@ fun RecipeScreen(modifier: Modifier = Modifier) {
                 Button(
                     onClick = { /* TODO */ },
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(8.dp)
                         .weight(1f)
                 ) {
                     Text("Add Sweet")

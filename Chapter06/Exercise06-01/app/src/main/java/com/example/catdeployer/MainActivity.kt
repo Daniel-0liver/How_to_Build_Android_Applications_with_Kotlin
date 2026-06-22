@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,84 +36,7 @@ class MainActivity : ComponentActivity() {
             val context = LocalContext.current
             CatDeployerTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val listItems = remember {
-                        mutableStateListOf(
-                            ListItemUiModel.Title("Sleeper Agents"),
-                            ListItemUiModel.Cat(
-                                CatUiModel(
-                                    Gender.MALE,
-                                    "Fred",
-                                    "Silent and deadly",
-                                    "https://24.media.tumblr.com/ tumblr_lsln7s1Z8f1qasbyxo1_250.jpg"
-                                )
-                            ),
-                            ListItemUiModel.Cat(
-                                CatUiModel(
-                                    Gender.FEMALE,
-                                    "Wilma",
-                                    "Cuddly assassin",
-                                    "https://cdn2.thecatapi.com/images/KJF8fB_20.jpg"
-                                )
-                            ),
-                            ListItemUiModel.Cat(
-                                CatUiModel(
-                                    Gender.MALE,
-                                    "Fred",
-                                    "Silent and deadly",
-                                    "https://24.media.tumblr.com/tumblr_lsln7s1Z8f1qasbyxo1_250.jpg"
-                                )
-                            ),
-                            ListItemUiModel.Cat(
-                                CatUiModel(
-                                    Gender.FEMALE,
-                                    "Wilma",
-                                    "Cuddly assassin",
-                                    "https://cdn2.thecatapi.com/images/KJF8fB_20.jpg"
-                                )
-                            ),
-                            ListItemUiModel.Cat(
-                                CatUiModel(
-                                    Gender.MALE,
-                                    "Fred",
-                                    "Silent and deadly",
-                                    "https://24.media.tumblr.com/tumblr_lsln7s1Z8f1qasbyxo1_250.jpg"
-                                )
-                            ),
-                            ListItemUiModel.Cat(
-                                CatUiModel(
-                                    Gender.FEMALE,
-                                    "Wilma",
-                                    "Cuddly assassin",
-                                    "https://cdn2.thecatapi.com/images/KJF8fB_20.jpg"
-                                )
-                            ),
-                            ListItemUiModel.Title("Active Agents"),
-                            ListItemUiModel.Cat(
-                                CatUiModel(
-                                    Gender.UNKNOWN,
-                                    "Curious George",
-                                    "Award winning investigator",
-                                    "https://cdn2.thecatapi.com/images/vJB8rwfdX.jpg"
-                                )
-                            ),
-                            ListItemUiModel.Cat(
-                                CatUiModel(
-                                    Gender.UNKNOWN,
-                                    "Curious George",
-                                    "Award winning investigator",
-                                    "https://cdn2.thecatapi.com/images/vJB8rwfdX.jpg"
-                                )
-                            ),
-                            ListItemUiModel.Cat(
-                                CatUiModel(
-                                    Gender.UNKNOWN,
-                                    "Curious George",
-                                    "Award winning investigator",
-                                    "https://cdn2.thecatapi.com/images/vJB8rwfdX.jpg"
-                                )
-                            )
-                        )
-                    }
+                    val listItems = agents()
                     Column(
                         modifier = Modifier
                             .padding(innerPadding)
@@ -176,6 +100,89 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+@Composable
+private fun agents(): SnapshotStateList<ListItemUiModel> {
+    val listItems = remember {
+        mutableStateListOf(
+            ListItemUiModel.Title("Sleeper Agents"),
+            ListItemUiModel.Cat(
+                CatUiModel(
+                    Gender.MALE,
+                    "Fred",
+                    "Silent and deadly",
+                    "https://24.media.tumblr.com/ tumblr_lsln7s1Z8f1qasbyxo1_250.jpg"
+                )
+            ),
+            ListItemUiModel.Cat(
+                CatUiModel(
+                    Gender.FEMALE,
+                    "Wilma",
+                    "Cuddly assassin",
+                    "https://cdn2.thecatapi.com/images/KJF8fB_20.jpg"
+                )
+            ),
+            ListItemUiModel.Cat(
+                CatUiModel(
+                    Gender.MALE,
+                    "Fred",
+                    "Silent and deadly",
+                    "https://24.media.tumblr.com/tumblr_lsln7s1Z8f1qasbyxo1_250.jpg"
+                )
+            ),
+            ListItemUiModel.Cat(
+                CatUiModel(
+                    Gender.FEMALE,
+                    "Wilma",
+                    "Cuddly assassin",
+                    "https://cdn2.thecatapi.com/images/KJF8fB_20.jpg"
+                )
+            ),
+            ListItemUiModel.Cat(
+                CatUiModel(
+                    Gender.MALE,
+                    "Fred",
+                    "Silent and deadly",
+                    "https://24.media.tumblr.com/tumblr_lsln7s1Z8f1qasbyxo1_250.jpg"
+                )
+            ),
+            ListItemUiModel.Cat(
+                CatUiModel(
+                    Gender.FEMALE,
+                    "Wilma",
+                    "Cuddly assassin",
+                    "https://cdn2.thecatapi.com/images/KJF8fB_20.jpg"
+                )
+            ),
+            ListItemUiModel.Title("Active Agents"),
+            ListItemUiModel.Cat(
+                CatUiModel(
+                    Gender.UNKNOWN,
+                    "Curious George",
+                    "Award winning investigator",
+                    "https://cdn2.thecatapi.com/images/vJB8rwfdX.jpg"
+                )
+            ),
+            ListItemUiModel.Cat(
+                CatUiModel(
+                    Gender.UNKNOWN,
+                    "Curious George",
+                    "Award winning investigator",
+                    "https://cdn2.thecatapi.com/images/vJB8rwfdX.jpg"
+                )
+            ),
+            ListItemUiModel.Cat(
+                CatUiModel(
+                    Gender.UNKNOWN,
+                    "Curious George",
+                    "Award winning investigator",
+                    "https://cdn2.thecatapi.com/images/vJB8rwfdX.jpg"
+                )
+            )
+        )
+    }
+    return listItems
 }
 
 @Composable

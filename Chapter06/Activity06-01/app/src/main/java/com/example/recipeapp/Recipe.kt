@@ -1,4 +1,4 @@
-package com.example.catdeployer
+package com.example.recipeapp
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.AnchoredDraggableState
@@ -7,36 +7,25 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.catdeployer.DragAnchors.END
-import com.example.catdeployer.DragAnchors.START
-import com.example.catdeployer.model.CatUiModel
-import com.example.catdeployer.model.ImageResponse
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.get
-import io.ktor.client.request.parameter
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
+import com.example.recipeapp.DragAnchors.END
+import com.example.recipeapp.DragAnchors.START
+import com.example.recipeapp.model.RecipeUiModel
 import kotlin.math.roundToInt
 
 @Composable
-fun Cat(
-    cat: CatUiModel,
+fun Recipe(
+    recipe: RecipeUiModel,
     onClick: () -> Unit,
     onSwipe: () -> Unit,
     modifier: Modifier = Modifier
@@ -74,58 +63,20 @@ fun Cat(
                 state = dragState,
                 orientation = Orientation.Horizontal
             )
-            .clickable {
-                onClick()
-            }
+            .clickable(onClick = onClick)
     ) {
-        if (cat.imageUrl.isNotEmpty()) {
-            LoadedImage(
-                imageUrl = cat.imageUrl,
-                modifier = modifier.size(64.dp)
-            )
-        } else {
-            Spacer(modifier = Modifier.size(64.dp))
-        }
-        Column {
-            Text(text = cat.name)
-            Text(text = cat.biography)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text(recipe.name)
+            Text(recipe.description)
         }
     }
 }
-
-private val client = HttpClient(CIO) {
-    install(ContentNegotiation) {
-        json(Json { ignoreUnknownKeys = true })
-    }
-}
-
-suspend fun getRandomCatImageUrl(): List<ImageResponse> {
-    return client.get(
-        urlString = "https://api.thecatapi.com/v1/images/search"
-    ) {
-        url {
-            parameter("limit", 1)
-        }
-    }.body()
-}
-
 
 private enum class DragAnchors {
-            START,
-    END,
-}
-
-@Preview
-@Composable
-private fun CatPreview() {
-    Cat(
-        cat = CatUiModel(
-            gender = com.example.catdeployer.model.Gender.MALE,
-            name = "Fred",
-            biography = "Silent and deadly",
-            imageUrl = "https://24.media.tumblr.com/tumblr_lsln7s1Z8f1qasbyxo1_250.jpg"
-        ),
-        onClick = { },
-        onSwipe = {}
-    )
+    START,
+    END
 }

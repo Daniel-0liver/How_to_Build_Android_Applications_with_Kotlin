@@ -111,7 +111,7 @@ suspend fun getRandomCatImageUrl(): List<ImageResponse> {
 
 
 private enum class DragAnchors {
-            START,
+    START,
     END,
 }
 

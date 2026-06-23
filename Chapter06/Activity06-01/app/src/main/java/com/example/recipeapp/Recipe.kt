@@ -20,12 +20,12 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.recipeapp.DragAnchors.END
 import com.example.recipeapp.DragAnchors.START
-import com.example.recipeapp.model.RecipeUiModel
+import com.example.recipeapp.model.ListItemUiModel
 import kotlin.math.roundToInt
 
 @Composable
 fun Recipe(
-    recipe: RecipeUiModel,
+    recipe: ListItemUiModel.Recipe,
     onClick: () -> Unit,
     onSwipe: () -> Unit,
     modifier: Modifier = Modifier
@@ -70,8 +70,8 @@ fun Recipe(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(recipe.name)
-            Text(recipe.description)
+            Text(recipe.recipe.name)
+            Text(recipe.recipe.description)
         }
     }
 }

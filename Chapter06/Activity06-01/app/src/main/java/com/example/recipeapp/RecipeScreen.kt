@@ -1,5 +1,6 @@
 package com.example.recipeapp
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,9 +15,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,10 +40,31 @@ fun RecipeScreen() {
                 .padding(innerPadding)
         ) {
             val listState = rememberLazyListState()
-            var recipeListSavory = recipeListSavory()
-            var recipeListSweet = recipeListSweet()
+            val recipeListSavory = remember {
+                mutableStateListOf(
+                    ListItemUiModel.Title("Savory"),
+                    ListItemUiModel.Recipe(
+                        recipe = RecipeUiModel(
+                            name = "Recipe 1",
+                            description = "Description 1",
+                            flavor = Flavor.SAVORY
+                        )
+                    ),
+                )
+            }
+            val recipeListSweet = remember {
+                mutableStateListOf(
+                    ListItemUiModel.Title("Sweet"),
+                    ListItemUiModel.Recipe(
+                        recipe = RecipeUiModel(
+                            name = "Recipe 2",
+                            description = "Description 2",
+                            flavor = Flavor.SWEET
+                        )
+                    ),
+                )
+            }
             val context = LocalContext.current
-
 
             LazyColumn(
                 state = listState,
@@ -72,16 +96,13 @@ fun RecipeScreen() {
                                     ).show()
                                 },
                                 onSwipe = {
-                                    recipeListSavory = recipeListSavory.toMutableList().apply {
-                                        removeAt(index)
-                                    }
+                                    recipeListSavory.removeAt(index)
                                 },
                                 modifier = Modifier
                                     .padding(vertical = 4.dp)
                             )
                         }
                     }
-
                 }
                 items(
                     count = recipeListSweet.size,
@@ -107,9 +128,7 @@ fun RecipeScreen() {
                                     ).show()
                                 },
                                 onSwipe = {
-                                    recipeListSweet = recipeListSweet.toMutableList().apply {
-                                        removeAt(index)
-                                    }
+                                    recipeListSweet.removeAt(index)
                                 },
                                 modifier = Modifier
                                     .padding(vertical = 4.dp)
@@ -119,74 +138,99 @@ fun RecipeScreen() {
                 }
             }
 
-            var recipeNameValue by remember { mutableStateOf("") }
-            var recipeDescriptionValue by remember { mutableStateOf("") }
-            OutlinedTextField(
-                value = recipeNameValue,
-                onValueChange = {
-                    recipeNameValue = it
-                },
-                label = { Text("Recipe Name") },
-                maxLines = 1,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-            )
-            OutlinedTextField(
-                value = recipeDescriptionValue,
-                onValueChange = {
-                    recipeDescriptionValue = it
-                },
-                label = { Text("Recipe Description") },
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Button(
-                    onClick = {
-                        recipeListSavory.add(
-                            ListItemUiModel.Recipe(
-                                recipe = RecipeUiModel(
-                                    name = recipeNameValue,
-                                    description = recipeDescriptionValue,
-                                    flavor = Flavor.SAVORY
-                                )
+            AddRecipeSection(recipeListSavory, context, recipeListSweet)
+        }
+    }
+}
+
+@Composable
+private fun AddRecipeSection(
+    recipeListSavory: SnapshotStateList<ListItemUiModel>,
+    context: Context,
+    recipeListSweet: SnapshotStateList<ListItemUiModel>
+) {
+    var recipeNameValue by remember { mutableStateOf("") }
+    var recipeDescriptionValue by remember { mutableStateOf("") }
+    OutlinedTextField(
+        value = recipeNameValue,
+        onValueChange = {
+            recipeNameValue = it
+        },
+        label = { Text("Recipe Name") },
+        maxLines = 1,
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+    )
+    OutlinedTextField(
+        value = recipeDescriptionValue,
+        onValueChange = {
+            recipeDescriptionValue = it
+        },
+        label = { Text("Recipe Description") },
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Button(
+            onClick = {
+                if (recipeNameValue.isNotEmpty() && recipeDescriptionValue.isNotEmpty()) {
+                    recipeListSavory.add(
+                        ListItemUiModel.Recipe(
+                            recipe = RecipeUiModel(
+                                name = recipeNameValue,
+                                description = recipeDescriptionValue,
+                                flavor = Flavor.SAVORY
                             )
                         )
-                        recipeNameValue = ""
-                        recipeDescriptionValue = ""
-                    },
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .weight(1f)
-                ) {
-                    Text("Add Savory")
+                    )
+                    recipeNameValue = ""
+                    recipeDescriptionValue = ""
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Please enter a name and description",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-                Button(
-                    onClick = {
-                        recipeListSweet.add(
-                            ListItemUiModel.Recipe(
-                                recipe = RecipeUiModel(
-                                    name = recipeNameValue,
-                                    description = recipeDescriptionValue,
-                                    flavor = Flavor.SWEET
-                                )
+            },
+            modifier = Modifier
+                .padding(8.dp)
+                .weight(1f)
+        ) {
+            Text("Add Savory")
+        }
+        Button(
+            onClick = {
+                if (recipeNameValue.isNotEmpty() && recipeDescriptionValue.isNotEmpty()) {
+                    recipeListSweet.add(
+                        ListItemUiModel.Recipe(
+                            recipe = RecipeUiModel(
+                                name = recipeNameValue,
+                                description = recipeDescriptionValue,
+                                flavor = Flavor.SWEET
                             )
                         )
-                        recipeNameValue = ""
-                        recipeDescriptionValue = ""
-                    },
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .weight(1f)
-                ) {
-                    Text("Add Sweet")
+                    )
+                    recipeNameValue = ""
+                    recipeDescriptionValue = ""
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Please enter a name and description",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-            }
+            },
+            modifier = Modifier
+                .padding(8.dp)
+                .weight(1f)
+        ) {
+            Text("Add Sweet")
         }
     }
 }

@@ -200,7 +200,8 @@ fun CatAgents(
     ) {
         items(
             count = listItems.size,
-            key = { index -> listItems[index].id }) { index ->
+            key = { index -> listItems[index].id }
+        ) { index ->
             when (val item = listItems[index]) {
                 is ListItemUiModel.Title -> {
                     Text(

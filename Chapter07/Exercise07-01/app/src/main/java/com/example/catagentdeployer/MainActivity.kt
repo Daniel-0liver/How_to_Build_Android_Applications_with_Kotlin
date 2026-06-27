@@ -1,7 +1,9 @@
 package com.example.catagentdeployer
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -22,17 +24,57 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.catagentdeployer.ui.theme.CatAgentDeployerTheme
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.maps.android.compose.CameraPositionState
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 class MainActivity : ComponentActivity() {
+    private val fusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            var currentUserLocation by remember {
+                mutableStateOf(LatLng(0.0, 0.0))
+            }
+
+            fun getUserLocation() {
+                val cancellationTokenSource = CancellationTokenSource()
+                lifecycleScope.launch @SuppressLint("MissingPermission") {
+                    suspendCancellableCoroutine { continuation ->
+                        fusedLocationProviderClient.getCurrentLocation(
+                            PRIORITY_HIGH_ACCURACY,
+                            cancellationTokenSource.token
+                        ).addOnSuccessListener { location: Location? ->
+                            currentUserLocation = LatLng(
+                                location?.latitude ?: 0.0,
+                                location?.longitude ?: 0.0
+                            )
+                        }
+                        continuation.invokeOnCancellation {
+                            cancellationTokenSource.cancel()
+                        }
+                    }
+                }
+            }
+
             var locationPermissionsGranted by remember {
                 mutableStateOf(areLocationPermissionsGranted())
             }
@@ -45,6 +87,8 @@ class MainActivity : ComponentActivity() {
                     locationPermissionsGranted = permissions.values.all { it }
                     if (!locationPermissionsGranted) {
                         shouldShowLocationRationale = shouldShowLocationPermissionRationale()
+                    } else {
+                        getUserLocation()
                     }
                 }
             )
@@ -93,10 +137,41 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     )
+                    val cameraPositionState = rememberSaveable(
+                        currentUserLocation,
+                        saver = CameraPositionState.Saver
+                    ) {
+                        CameraPositionState(
+                            position = CameraPosition.fromLatLngZoom(
+                                currentUserLocation,
+                                10f
+                            )
+                        )
+                    }
+                    GoogleMap(
+                        modifier = Modifier.padding(innerPadding),
+                        cameraPositionState = cameraPositionState
+                    ) {
+                        val markerState = rememberSaveable(
+                            currentUserLocation,
+                            saver = MarkerState.Saver
+                        ) {
+                            MarkerState(position = currentUserLocation)
+                        }
+                        if (currentUserLocation.latitude != 0.0 && currentUserLocation.longitude != 0.0) {
+                            Marker(
+                                state = markerState,
+                                title = "You are here"
+                            )
+                        }
+                    }
                     Button(
                         onClick = {
                             if (!locationPermissionsGranted) {
-                                shouldShowLocationRationale = shouldShowLocationPermissionRationale()
+                                shouldShowLocationRationale =
+                                    shouldShowLocationPermissionRationale()
+                            } else {
+                                getUserLocation()
                             }
                             if (!locationPermissionsGranted && !shouldShowLocationRationale) {
                                 requestLocationPermission()
@@ -104,7 +179,7 @@ class MainActivity : ComponentActivity() {
                         },
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        Text("Request Permissions")
+                        Text(text = "Get location ($currentUserLocation)")
                     }
                 }
             }

@@ -3,6 +3,9 @@ package com.example.catagentdeployer
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,6 +13,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -28,10 +32,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.catagentdeployer.ui.theme.CatAgentDeployerTheme
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -49,6 +58,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MapsInitializer.initialize(this)
         enableEdgeToEdge()
         setContent {
             var currentUserLocation by remember {
@@ -148,20 +158,31 @@ class MainActivity : ComponentActivity() {
                             )
                         )
                     }
+                    val icon by remember {
+                        mutableStateOf(
+                            getBitmapDescriptorFromVector(
+                                R.drawable.target_icon
+                            )
+                        )
+                    }
+                    val markerState = rememberSaveable(
+                        currentUserLocation,
+                        saver = MarkerState.Saver
+                    ) {
+                        MarkerState(position = currentUserLocation)
+                    }
                     GoogleMap(
                         modifier = Modifier.padding(innerPadding),
-                        cameraPositionState = cameraPositionState
-                    ) {
-                        val markerState = rememberSaveable(
-                            currentUserLocation,
-                            saver = MarkerState.Saver
-                        ) {
-                            MarkerState(position = currentUserLocation)
+                        cameraPositionState = cameraPositionState,
+                        onMapClick = { latLng ->
+                            markerState.position = latLng
                         }
+                    ) {
                         if (currentUserLocation.latitude != 0.0 && currentUserLocation.longitude != 0.0) {
                             Marker(
                                 state = markerState,
-                                title = "You are here"
+                                title = "${markerState.position.latitude}, ${markerState.position.longitude}",
+                                icon = icon,
                             )
                         }
                     }
@@ -179,7 +200,7 @@ class MainActivity : ComponentActivity() {
                         },
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        Text(text = "Get location ($currentUserLocation)")
+                        Text(text = "Get location (${markerState.position})")
                     }
                 }
             }
@@ -199,6 +220,32 @@ class MainActivity : ComponentActivity() {
             Manifest.permission.ACCESS_FINE_LOCATION
         )
 
-
+    private fun getBitmapDescriptorFromVector(
+        @DrawableRes vectorDrawableResourceId: Int
+    ): BitmapDescriptor? = ContextCompat.getDrawable(
+        this,
+        vectorDrawableResourceId
+    )?.let { vectorDrawable ->
+        vectorDrawable.setBounds(
+            0,
+            0,
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight
+        )
+        val drawableWithTint = DrawableCompat.wrap(vectorDrawable)
+        DrawableCompat.setTint(
+            drawableWithTint,
+            Color.DKGRAY
+        )
+        val bitmap = createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        drawableWithTint.draw(canvas)
+        BitmapDescriptorFactory.fromBitmap(bitmap)
+            .also { bitmap.recycle() }
+    }
 }
 

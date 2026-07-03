@@ -90,10 +90,10 @@ Deep dive into RecyclerView for displaying large, scrollable lists and grids. Co
 | Exercise / Activity | Link |
 |---------------------|------|
 | Exercise 06-01 | [Exercise06-01](./Chapter06/Exercise06-01) |
-| Exercise 06-02 | [Exercise06-02](./Chapter06/Exercise06-02) |
+| Exercise 06-02 | Reused [Exercise06-01](./Chapter06/Exercise06-01); updated in commit [5d805a8](https://github.com/Daniel-0liver/How_to_Build_Android_Applications_with_Kotlin/commit/5d805a84ec28bae0314663a194b15f5922ab0569) |
 | Exercise 06-03 | [Exercise06-03](./Chapter06/Exercise06-03) |
 | Exercise 06-04 | [Exercise06-04](./Chapter06/Exercise06-04) |
-| Exercise 06-05 | [Exercise06-05](./Chapter06/Exercise06-05) |
+| Exercise 06-05 | Reused [Exercise06-01](./Chapter06/Exercise06-01); updated in commit [98284d4](https://github.com/Daniel-0liver/How_to_Build_Android_Applications_with_Kotlin/commit/98284d42878d7ed4e9624b4c80937c2de402631d) |
 | Exercise 06-06 | [Exercise06-06](./Chapter06/Exercise06-06) |
 | Activity 06-01 | [Activity06-01](./Chapter06/Activity06-01) |
 

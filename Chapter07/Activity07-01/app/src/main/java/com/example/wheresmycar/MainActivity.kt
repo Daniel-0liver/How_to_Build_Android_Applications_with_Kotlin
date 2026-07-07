@@ -3,6 +3,9 @@ package com.example.wheresmycar
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,6 +13,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -32,15 +36,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.drawable.DrawableCompat.setTint
 import androidx.lifecycle.lifecycleScope
 import com.example.wheresmycar.ui.theme.WheresMyCarTheme
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+import com.google.android.gms.maps.MapsInitializer
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -52,14 +63,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MapsInitializer.initialize(this)
+        val preferencesManager = PreferencesManager(this)
         enableEdgeToEdge()
         setContent {
             var currentLocation by remember {
                 mutableStateOf(
-                    LatLng(
-                        0.0,
-                        0.0
-                    )
+                    preferencesManager.loadLocation() ?: LatLng(0.0, 0.0)
                 )
             }
 
@@ -71,10 +81,12 @@ class MainActivity : ComponentActivity() {
                             PRIORITY_HIGH_ACCURACY,
                             cancellationTokenSource.token
                         ).addOnSuccessListener { location: Location? ->
-                            currentLocation = LatLng(
+                            val newLocation = LatLng(
                                 location?.latitude ?: 0.0,
                                 location?.longitude ?: 0.0
                             )
+                            currentLocation = newLocation
+                            preferencesManager.saveLocation(newLocation)
                         }
                         continuation.invokeOnCancellation {
                             cancellationTokenSource.cancel()
@@ -148,30 +160,42 @@ class MainActivity : ComponentActivity() {
                     )
 
                     Box(modifier = Modifier.padding(innerPadding)) {
+                        val markerIcon by remember {
+                            mutableStateOf(
+                                getBitmapDescriptorFromVector(
+                                    R.drawable.car_icon
+                                )
+                            )
+                        }
                         WhereIsMyCarScreen(
                             currentLocation = currentLocation,
+                            markerIcon = markerIcon,
+                            onMarkerPositionChanged = { newLocation ->
+                                currentLocation = newLocation
+                                preferencesManager.saveLocation(newLocation)
+                            },
                             modifier = Modifier.fillMaxSize()
                         )
 
-                        if (!locationPermissionsGranted) {
-                            Button(
-                                onClick = {
-                                    if (!locationPermissionsGranted) {
-                                        shouldShowLocationRationale =
-                                            shouldShowLocationPermissionRationale()
-                                    }
-                                    if (!locationPermissionsGranted &&
-                                        !shouldShowLocationRationale
-                                    ) {
-                                        requestLocationPermission()
-                                    }
-                                },
-                                modifier = Modifier
-                                    .align(Alignment.TopCenter)
-                                    .padding(16.dp)
-                            ) {
-                                Text(text = "Request permission")
-                            }
+                        Button(
+                            onClick = {
+                                if (!locationPermissionsGranted) {
+                                    shouldShowLocationRationale =
+                                        shouldShowLocationPermissionRationale()
+                                } else {
+                                    getUserLocation()
+                                }
+                                if (!locationPermissionsGranted &&
+                                    !shouldShowLocationRationale
+                                ) {
+                                    requestLocationPermission()
+                                }
+                            },
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .padding(16.dp)
+                        ) {
+                            Text(text = "Current location $currentLocation")
                         }
                     }
                 }
@@ -191,11 +215,41 @@ class MainActivity : ComponentActivity() {
         ) || shouldShowRequestPermissionRationale(
             Manifest.permission.ACCESS_FINE_LOCATION
         )
+
+    private fun getBitmapDescriptorFromVector(
+        @DrawableRes vectorDrawableResourceId: Int
+    ): BitmapDescriptor? = ContextCompat.getDrawable(
+        this,
+        vectorDrawableResourceId
+    )?.let { vectorDrawable ->
+        vectorDrawable.setBounds(
+            0,
+            0,
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight
+        )
+        val drawableWithTint = DrawableCompat.wrap(vectorDrawable)
+        setTint(
+            drawableWithTint,
+            Color.DKGRAY
+        )
+        val bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        drawableWithTint.draw(canvas)
+        BitmapDescriptorFactory.fromBitmap(bitmap)
+            .also { bitmap.recycle() }
+    }
 }
 
 @Composable
 fun WhereIsMyCarScreen(
     currentLocation: LatLng,
+    markerIcon: BitmapDescriptor?,
+    onMarkerPositionChanged: (LatLng) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val cameraPositionState = rememberSaveable(
@@ -209,11 +263,28 @@ fun WhereIsMyCarScreen(
             )
         )
     }
+
+    val markerState = rememberSaveable(
+        currentLocation,
+        saver = MarkerState.Saver
+    ) {
+        MarkerState(position = currentLocation)
+    }
+
     GoogleMap(
         modifier = modifier,
         cameraPositionState = cameraPositionState,
-        onMapClick = {}
+        onMapClick = { latLng ->
+            markerState.position = latLng
+            onMarkerPositionChanged(latLng)
+        }
     ) {
-
+        if (currentLocation != LatLng(0.0, 0.0)) {
+            Marker(
+                state = markerState,
+                title = "${currentLocation.latitude}, ${currentLocation.longitude}",
+                icon = markerIcon
+            )
+        }
     }
 }

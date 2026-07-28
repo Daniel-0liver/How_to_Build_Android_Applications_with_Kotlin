@@ -1,21 +1,36 @@
 package com.example.catagenttracker.worker
 
+import android.annotation.SuppressLint
+import android.app.Notification.FOREGROUND_SERVICE_IMMEDIATE
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.os.Build
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
+import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.example.catagenttracker.MainActivity
+import com.example.catagenttracker.R
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 class RouteTrackingWorker(
     context: Context,
     parameters: WorkerParameters
 ) : CoroutineWorker(context, parameters) {
+
+    private val channelId by lazy {
+        createNotificationChannel()
+    }
+    private var secondsLeft = INITIAL_SECONDS_LEFT
 
     private fun getPendingIntent(): PendingIntent {
         val flag = if (
@@ -50,7 +65,85 @@ class RouteTrackingWorker(
         )
         service.createNotificationChannel(channel)
         newChannelId
-    } else { "" }
+    } else {
+        ""
+    }
+
+    private fun getNotificationBuilder():
+            NotificationCompat.Builder {
+        val pendingIntent = getPendingIntent()
+        return NotificationCompat.Builder(
+            applicationContext, channelId
+        ).setContentTitle("Agent approaching destination")
+            .setSmallIcon(
+                R.drawable.ic_launcher_foreground
+            ).setContentIntent(pendingIntent)
+            .setTicker(
+                "Agent dispatched, tracking movement"
+            ).setOngoing(true)
+            .setForegroundServiceBehavior(
+                FOREGROUND_SERVICE_IMMEDIATE
+            ).setOnlyAlertOnce(true)
+    }
+
+    private fun createForegroundInfo(
+        secondsLeft: Int
+    ): ForegroundInfo {
+        val notification = getNotificationBuilder()
+            .setContentText(
+                "$secondsLeft seconds to destination"
+            ).build()
+        return if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+        ) {
+            ForegroundInfo(
+                NOTIFICATION_ID, notification,
+                FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            )
+        } else {
+            ForegroundInfo(NOTIFICATION_ID, notification)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun updateNotification() {
+        val notification = getNotificationBuilder()
+            .setContentText(
+                "$secondsLeft seconds to destination"
+            ).build()
+        NotificationManagerCompat
+            .from(applicationContext)
+            .notify(NOTIFICATION_ID, notification)
+    }
+
+    private suspend fun trackToDestination(
+        catAgentId: String
+    ) {
+        secondsLeft = INITIAL_SECONDS_LEFT
+        for (i in INITIAL_SECONDS_LEFT downTo 0) {
+            secondsLeft = i
+            setProgress(
+                workDataOf(
+                    DATA_KEY_CAT_AGENT_ID to catAgentId,
+                    DATA_KEY_SECONDS_LEFT to secondsLeft
+                )
+            )
+            updateNotification()
+            delay(1000L.milliseconds)
+        }
+    }
+
+    override suspend fun doWork(): Result {
+        val catAgentId = inputData
+            .getString(DATA_KEY_CAT_AGENT_ID) ?:
+        error("Agent ID must be provided")
+        setForeground(getForegroundInfo())
+        trackToDestination(catAgentId)
+        return Result.success()
+    }
+
+    override suspend fun getForegroundInfo() = createForegroundInfo(secondsLeft)
+
 
     companion object {
         private const val NOTIFICATION_ID = 0xCA7

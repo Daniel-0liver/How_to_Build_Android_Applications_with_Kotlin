@@ -1,20 +1,21 @@
 [versions]
-activityCompose = "1.10.1"
-agp = "8.10.0"
-kotlin = "2.1.21"
-coilCompose = "2.6.0"
-composeBom = "2025.05.00"
-coreKtx = "1.16.0"
+activityCompose = "1.13.0"
+agp = "9.3.1"
+kotlin = "2.4.10"
+coilCompose = "3.5.0"
+composeBom = "2026.06.01"
+coreKtx = "1.19.0"
 coreTesting = "2.2.0"
 espressoCore = "3.6.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
-kotlinxSerializationJson = "1.7.3"
-ksp = "2.1.21-2.0.1"
-ktor = "2.3.12"
-lifecycle = "2.9.0"
-mockk = "1.13.11"
-roomKtx = "2.7.1"
+kotlinxSerializationJson = "1.11.0"
+ksp = "2.3.10"
+ktor = "3.5.1"
+lifecycle = "2.11.0"
+mockk = "1.14.11"
+roomKtx = "2.8.4"
+kotlinxCoroutines = "1.11.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,13 +36,18 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
+androidx-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilCompose" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilCompose" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 mockk = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -3,13 +3,20 @@ package com.example.popularmovies
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.popularmovies.model.Movie
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-class MovieViewModel(val movieRepository: MovieRepository) : ViewModel() {
+class MovieViewModel(
+    val movieRepository: MovieRepository,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+) : ViewModel() {
     private val _popularMovies = MutableStateFlow(emptyList<Movie>())
     val popularMovies = _popularMovies.asStateFlow()
 
@@ -17,7 +24,13 @@ class MovieViewModel(val movieRepository: MovieRepository) : ViewModel() {
     val error = _error.asStateFlow()
 
     fun getPopularMovies() {
-
+        viewModelScope.launch(dispatcher) {
+            try {
+                _popularMovies.value = movieRepository.getPopularMovies()
+            } catch (exception: Exception) {
+                _error.value = "An error occurred: ${exception.message}"
+            }
+        }
     }
 
     companion object {

@@ -4,7 +4,7 @@ import android.app.Application
 import com.example.popularmovies.network.MovieService
 
 class MovieApplication : Application() {
-    private val apiKey = "your_api_key_here"
+    private val apiKey = BuildConfig.TMDB_API_KEY
 
     private val movieService: MovieService by lazy {
         MovieService(apiKey = apiKey)
